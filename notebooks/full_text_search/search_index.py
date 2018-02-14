@@ -50,19 +50,19 @@ class SearchIndex():
         data = data.split()
         return SearchIndex._ngram_list(data)
 
-    def create_index(self, data):
-        alphanum_data = SearchIndex._eliminate_punctuation(data)
-        words = alphanum_data.split()
-        start_i = 0
-        for word in words:
-            i = 0
-            for i in range(0, len(word) - self.CHARS_IN_GRAM + 1):
-                gram = word[i:i + self.CHARS_IN_GRAM]
-                if not gram in self.SEARCH_INDEX:
-                    self.SEARCH_INDEX[gram] = list()
-                self.SEARCH_INDEX[gram].append(start_i + i)
-            start_i += i
-            self.SEARCH_INDEX_LENGTH += i
+    def create_index(self, data_ngrams):
+        """
+
+        :param data_ngrams: Expects list of gram for the document/term.
+                            Use gramify() for that purpose.
+        :return:
+        """
+
+        for i, gram in enumerate(data_ngrams):
+            if gram not in self.SEARCH_INDEX:
+                self.SEARCH_INDEX[gram] = list()
+            self.SEARCH_INDEX[gram].append(i)
+        self.SEARCH_INDEX_LENGTH = i
 
     # def search_score_naive(term):
     #     """

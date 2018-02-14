@@ -8,9 +8,10 @@ class TestSearchIndex(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.SI = SearchIndex()
+        cls.si = SearchIndex()
         doc1 = "Пеппи сидела на диване и молча слушала разговор дам"
-        cls.SI.create_index(doc1)
+
+        cls.si.create_index(cls.si.gramify(doc1))
 
     def test_extract_alphanum_data(self):
         res = SearchIndex._eliminate_punctuation("123!")
@@ -27,7 +28,7 @@ class TestSearchIndex(TestCase):
 
     def test_create_index(self):
         # assert all trigrams are contained
-        self.assertEqual(26, len(self.SI.SEARCH_INDEX.keys()))
+        self.assertEqual(26, len(self.si.SEARCH_INDEX.keys()))
 
     def test_gramify(self):
         term = "1234 5678"
@@ -36,8 +37,8 @@ class TestSearchIndex(TestCase):
 
     def test_score1(self):
         term_ngrams = SearchIndex.gramify("слушала")
-        score = self.SI.search_score(term_ngrams)
-        self.assertEqual(0.9473684210526316, score)
+        score = self.si.search_score(term_ngrams)
+        self.assertEqual(0.96, score)
 
 
 class TestLongDocument(TestCase):
@@ -46,11 +47,11 @@ class TestLongDocument(TestCase):
         with codecs.open(os.path.dirname(__file__) + "/draka.txt", "r", "utf-8") as h:
             document1 = h.read()
         si = SearchIndex()
-        si.create_index(document1)
+        si.create_index(SearchIndex.gramify(document1))
 
         term_ngrams = SearchIndex.gramify("побежали в XXX ванную, XXX")
         score = si.search_score(term_ngrams)
-        self.assertEqual(0.833083618721461, score)
+        self.assertEqual(0.833199593430696, score)
 
 
 if __name__ == '__main__':
