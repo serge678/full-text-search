@@ -1,7 +1,8 @@
 class SearchIndex():
-    # Class variables; set by create_index()
-    SEARCH_INDEX = dict()
-    SEARCH_INDEX_LENGTH = 0
+
+    def __init__(self):
+        self.SEARCH_INDEX        = dict()
+        self.SEARCH_INDEX_LENGTH = 0
 
     CHARS_IN_GRAM = 3
 
@@ -19,12 +20,13 @@ class SearchIndex():
         words = alphanum_data.split()
         start_i = 0
         for word in words:
+            i = 0
             for i in range(0, len(word) - self.CHARS_IN_GRAM + 1):
                 gram = word[i:i + self.CHARS_IN_GRAM]
                 if not gram in self.SEARCH_INDEX:
                     self.SEARCH_INDEX[gram] = list()
                 self.SEARCH_INDEX[gram].append(start_i + i)
-            start_i = i
+            start_i += i
             self.SEARCH_INDEX_LENGTH += i
 
     # def search_score_naive(term):
