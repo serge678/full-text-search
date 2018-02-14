@@ -77,7 +77,6 @@ class SearchIndex():
     #             matches += 1
     #     return matches / len(term_grams)
 
-
     def search_score(self, term_ngrams):
         """
         Score basiert auf Abständen der n-grams zum ersten n-gram, der ein Treffer ist.
