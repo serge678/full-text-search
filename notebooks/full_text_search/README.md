@@ -4,7 +4,8 @@ Changelog
 
 2018-02-14
 
-Eliminierung der Leerzeichen, Punktuation. Trigramme spannen nicht zwei Worte auf.
+Eliminierung der Leerzeichen, Punktuation, Großbuchstaben.
+Trigramme spannen nicht zwei Worte auf.
 Eliminierung der Stopp-Wörter.
 
 2018-02-13
