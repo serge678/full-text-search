@@ -15,16 +15,15 @@ class SearchIndex():
         return result
 
     def create_index(self, data):
-
         alphanum_data = self.extract_alphanum_data(data)
         words = alphanum_data.split()
         start_i = 0
         for word in words:
-            for i in range(start_i, len(word) - self.CHARS_IN_GRAM + 1):
+            for i in range(0, len(word) - self.CHARS_IN_GRAM + 1):
                 gram = word[i:i + self.CHARS_IN_GRAM]
                 if not gram in self.SEARCH_INDEX:
                     self.SEARCH_INDEX[gram] = list()
-                self.SEARCH_INDEX[gram].append(i)
+                self.SEARCH_INDEX[gram].append(start_i + i)
             start_i = i
             self.SEARCH_INDEX_LENGTH += i
 
