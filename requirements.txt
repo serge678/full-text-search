@@ -1,0 +1,4 @@
+gnureadline==6.3.8
+ipython==3.0.0
+jsonschema==2.6.0
+py2nb==0.0.0
