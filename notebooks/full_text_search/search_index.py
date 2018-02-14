@@ -108,7 +108,8 @@ class SearchIndex():
                 if dist < min_dist: min_dist = dist
 
             # Avoid division by zero
-            if min_dist == 0: min_dist = 1
+            if self.SEARCH_INDEX_LENGTH == 0:
+                return 0.0
 
             score_gram = 1 - min_dist / self.SEARCH_INDEX_LENGTH
             print("{}, Position {}, rel. distance {}, score gram {}".format(gram, position, min_dist, score_gram))

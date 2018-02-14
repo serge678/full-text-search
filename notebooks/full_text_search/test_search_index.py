@@ -38,7 +38,7 @@ class TestSearchIndex(TestCase):
     def test_score1(self):
         term_ngrams = SearchIndex.gramify("слушала")
         score = self.si.search_score(term_ngrams)
-        self.assertEqual(0.96, score)
+        self.assertEqual(1.0, score)
 
 
 class TestLongDocument(TestCase):
@@ -51,7 +51,17 @@ class TestLongDocument(TestCase):
 
         term_ngrams = SearchIndex.gramify("побежали в XXX ванную, XXX")
         score = si.search_score(term_ngrams)
-        self.assertEqual(0.833199593430696, score)
+        self.assertEqual(0.8332798373722784, score)
+
+    def test_long_document_full_match(self):
+        with codecs.open(os.path.dirname(__file__) + "/draka.txt", "r", "utf-8") as h:
+            document1 = h.read()
+        si = SearchIndex()
+        si.create_index(SearchIndex.gramify(document1))
+
+        term_ngrams = SearchIndex.gramify("побежали в ванную, ")
+        score = si.search_score(term_ngrams)
+        self.assertEqual(1.0, score)
 
 
 if __name__ == '__main__':
