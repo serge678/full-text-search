@@ -3,6 +3,11 @@ class SearchIndex():
     CHARS_IN_GRAM = 3
 
     def __init__(self):
+
+        """
+        The search index is a dictionary of ngrams as keys
+        and lists of occurencies in documents
+        """
         self.SEARCH_INDEX        = dict()
         self.SEARCH_INDEX_LENGTH = 0
 
