@@ -4,14 +4,22 @@ import os
 from .search_index import SearchIndex
 
 
-class TestSearchIndex(TestCase):
-
+class TestSearchIndexAddToIndex(TestCase):
     @classmethod
-    def setUpClass(cls):
+    def setUp(cls):
         cls.si = SearchIndex()
-        doc1 = "Пеппи сидела на диване и молча слушала разговор дам"
+        cls.si._add_to_index(['xxx'])
+        cls.si._add_to_index(['yyy'])
 
-        cls.si.create_index(cls.si.gramify(doc1))
+    def test_add_to_index(self):
+        index_exp = {
+            "xxx_0": [0],
+            "yyy_1": [0],
+        }
+        self.assertDictEqual(index_exp, self.si.INDEX)
+
+
+class TestStaticFunctions(TestCase):
 
     def test_extract_alphanum_data(self):
         res = SearchIndex._eliminate_punctuation("123!")
@@ -26,19 +34,31 @@ class TestSearchIndex(TestCase):
         expected = ["123", "234", "567", "678"]
         self.assertListEqual(expected, res)
 
-    def test_create_index(self):
-        # assert all trigrams are contained
-        self.assertEqual(26, len(self.si.SEARCH_INDEX.keys()))
-
     def test_gramify(self):
         term = "1234 5678"
         expected = ["123", "234", "567", "678"]
         self.assertListEqual(expected, SearchIndex.gramify(term))
 
+
+class TestSearch(TestCase):
+
     def test_score1(self):
-        term_ngrams = SearchIndex.gramify("слушала")
-        score = self.si.search_score(term_ngrams)
-        self.assertEqual(1.0, score)
+        si = SearchIndex()
+        si.add_to_index("слушала")
+        score = si.search("слушала")
+        self.assertEqual({0: 1.0}, score.value())
+
+    def test_score_lt1(self):
+        si = SearchIndex()
+        si.add_to_index("слушала")
+        score = si.search("слушали")
+        self.assertEqual({0: 0.8}, score.value())
+
+    def test_score_match_in_between_doc(self):
+        si = SearchIndex()
+        si.add_to_index("она слушала")
+        score = si.search("слушала")
+        self.assertEqual({0: 1.0}, score.value())
 
 
 class TestLongDocument(TestCase):
@@ -48,25 +68,38 @@ class TestLongDocument(TestCase):
         cls.si = SearchIndex()
         with codecs.open(os.path.dirname(__file__) + "/draka.txt", "r", "utf-8") as h:
             doc1 = h.read()
-        cls.si.create_index(cls.si.gramify(doc1))
+        cls.si.add_to_index(doc1)
 
     def test_long_document(self):
-
-        term_ngrams = SearchIndex.gramify("побежали в XXX ванную, XXX")
-        score = self.si.search_score(term_ngrams)
-        self.assertEqual(0.8332798373722784, score)
+        score = self.si.search("побежали в XXX ванную, XXX")
+        self.assertEqual({0: 0.8332798459563543}, score.value())
 
     def test_long_document_full_match(self):
-
-        term_ngrams = SearchIndex.gramify("побежали в ванную, ")
-        score = self.si.search_score(term_ngrams)
-        self.assertEqual(1.0, score)
+        score = self.si.search("побежали в ванную, ")
+        self.assertEqual({0: 0.9999999999999999}, score.value())
 
     def test_long_document_no_match(self):
+        score = self.si.search("XXXXXX")
+        self.assertEqual({}, score.value())
 
-        term_ngrams = SearchIndex.gramify("XXXXXX")
-        score = self.si.search_score(term_ngrams)
-        self.assertEqual(0.0, score)
+
+class TestTwoDocs(TestCase):
+
+    @classmethod
+    def setUp(cls):
+        cls.si = SearchIndex()
+        cls.si._add_to_index("Пеппи сидела на диване и молча слушала разговор дам")
+        cls.si._add_to_index("Дорогие мои, мне так досадно: я нашла две такие чудесные вещи")
+
+    # def test_search(self):
+    #     term_ngrams = SearchIndex.gramify("досадно")
+    #     scores = self.si.search(term_ngrams)
+    #     scores_exp = {
+    #         0: 0.0,
+    #         1: 1.0,
+    #     }
+    #     self.assertEqual(scores_exp, scores)
+
 
 
 if __name__ == '__main__':
