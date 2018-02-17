@@ -1,4 +1,5 @@
 from .score import Score
+from hashlib import md5
 
 
 class SearchIndex:
@@ -16,7 +17,7 @@ class SearchIndex:
             ...
         }
 
-        Structure of DOCS:
+        Structure of NGRAMS_2_DOCS:
         {
             <ngram0>: {
                 <doc0>: no matter,
@@ -32,9 +33,8 @@ class SearchIndex:
         }
         """
         self.INDEX = dict()
-        self.DOCS  = dict()
+        self.NGRAMS_2_DOCS  = dict()
         self.DOCS_LENGTHS = dict()
-        self.INDEX_LENGTH = 0  # Number of entries
         self.NUMBER_DOCS = 0   # Number of docs
 
     @staticmethod
@@ -81,35 +81,35 @@ class SearchIndex:
         data = data.split()
         return SearchIndex._ngram_list(data)
 
-    def add_to_index(self, data):
+    def add_to_index(self, doc_contents):
         """
 
         :param data: documents contents as a str
         :return:
         """
-        self._add_to_index(self.gramify(data))
 
-    def _add_to_index(self, doc_ngrams):
-        """
+        # generate an new id
+        doc_md5 = md5()
+        doc_md5.update(doc_contents.encode())
+        doc_id = doc_md5.hexdigest()
 
-        :param doc_ngrams: Expects list of gram for the document/term.
-                            Use gramify() for that purpose.
-        :return:
-        """
+        if doc_id in self.DOCS_LENGTHS:
+            return
+        self._add_to_index(doc_id, self.gramify(doc_contents))
+        return doc_id
 
-        doc = self.NUMBER_DOCS
-        i = 0
+    def _add_to_index(self, doc, doc_ngrams):
+
         for i, gram in enumerate(doc_ngrams):
-            key = gram + '_' + str(doc)
+            key = tuple([gram,doc])
             if key not in self.INDEX:
                 self.INDEX[key] = list()
             self.INDEX[key].append(i)
 
-            if gram not in self.DOCS:
-                self.DOCS[gram] = dict()
-            self.DOCS[gram][doc] = 1  # Value does not really matter
-        self.INDEX_LENGTH += i
-        self.NUMBER_DOCS  += 1
+            if gram not in self.NGRAMS_2_DOCS:
+                self.NGRAMS_2_DOCS[gram] = dict()
+            self.NGRAMS_2_DOCS[gram][doc] = 1  # Value does not really matter
+        self.NUMBER_DOCS += 1
         self.DOCS_LENGTHS[doc] = len(doc_ngrams)
 
     # def search_score_naive(term):
@@ -127,7 +127,7 @@ class SearchIndex:
 
     def search(self, term):
         # Avoid division by zero
-        if len(self.DOCS) == 0:
+        if len(self.NGRAMS_2_DOCS) == 0:
             return Score()
 
         if len(term) == 0:
@@ -152,17 +152,16 @@ class SearchIndex:
         return score
 
     def _compute_score(self, position_gram0, position_gram, gram, term_length):
-        if gram not in self.DOCS:
+        if gram not in self.NGRAMS_2_DOCS:
             return position_gram0, Score()
 
-        docs = self.DOCS[gram]
-        keys = [gram + '_' + str(doc) for doc in docs.keys()]
+        docs = self.NGRAMS_2_DOCS[gram]
 
         min_dist = float("inf")
         score_gram = Score()
-        for key in keys:
+        for key in [tuple([gram,doc]) for doc in docs.keys()]:
             entries_for_doc = self.INDEX[key]
-            doc = int(key.split('_')[1])
+            doc = key[1]
 
             if doc not in position_gram0:
                 position_gram0[doc] = entries_for_doc[0]
@@ -174,6 +173,7 @@ class SearchIndex:
 
             score = (1 - min_dist / self.DOCS_LENGTHS[doc]) / term_length
             #print("SCORE {} in {} = {}".format(gram, doc, score))
+
             score_gram.update(Score({
                 doc: score
             }))

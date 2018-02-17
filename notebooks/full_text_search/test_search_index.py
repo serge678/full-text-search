@@ -8,13 +8,13 @@ class TestSearchIndexAddToIndex(TestCase):
     @classmethod
     def setUp(cls):
         cls.si = SearchIndex()
-        cls.si._add_to_index(['xxx'])
-        cls.si._add_to_index(['yyy'])
+        cls.si._add_to_index(0, ['xxx'])
+        cls.si._add_to_index(1, ['yyy'])
 
     def test_add_to_index(self):
         index_exp = {
-            "xxx_0": [0],
-            "yyy_1": [0],
+            ("xxx", 0): [0],
+            ("yyy", 1): [0],
         }
         self.assertDictEqual(index_exp, self.si.INDEX)
 
@@ -46,19 +46,25 @@ class TestSearch(TestCase):
         si = SearchIndex()
         si.add_to_index("слушала")
         score = si.search("слушала")
-        self.assertEqual({0: 1.0}, score.value())
+        self.assertEqual({
+            '1e8b2604f23d83a1597cfb316706b215': 1.0
+        }, score.value())
 
     def test_score_lt1(self):
         si = SearchIndex()
         si.add_to_index("слушала")
         score = si.search("слушали")
-        self.assertEqual({0: 0.8}, score.value())
+        self.assertEqual({
+            '1e8b2604f23d83a1597cfb316706b215': 0.8
+        }, score.value())
 
     def test_score_match_in_between_doc(self):
         si = SearchIndex()
         si.add_to_index("она слушала")
         score = si.search("слушала")
-        self.assertEqual({0: 1.0}, score.value())
+        self.assertEqual({
+            'ce26cffa3faf2019c733f5f4c7caf074': 1.0
+        }, score.value())
 
 
 class TestLongDocument(TestCase):
@@ -72,11 +78,15 @@ class TestLongDocument(TestCase):
 
     def test_long_document(self):
         score = self.si.search("побежали в XXX ванную, XXX")
-        self.assertEqual({0: 0.8332798459563543}, score.value())
+        self.assertEqual({
+            '74c4f720094c291f90caafcb77118f1e': 0.8332798459563543
+        }, score.value())
 
     def test_long_document_full_match(self):
         score = self.si.search("побежали в ванную, ")
-        self.assertEqual({0: 0.9999999999999999}, score.value())
+        self.assertEqual({
+            '74c4f720094c291f90caafcb77118f1e': 0.9999999999999999
+        }, score.value())
 
     def test_long_document_no_match(self):
         score = self.si.search("XXXXXX")
@@ -93,10 +103,9 @@ class TestTwoDocs(TestCase):
 
     def test_search(self):
         scores = self.si.search("досадно")
-        scores_exp = {
-            1: 1.0,
-        }
-        self.assertEqual(scores_exp, scores.value())
+        self.assertEqual({
+            '8d4e5b9a35e6679f56c2a33f2c0e1018': 1.0,
+        }, scores.value())
 
 
 
