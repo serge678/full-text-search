@@ -1,6 +1,10 @@
 Changelog
 =========
 
+2018-02-17
+
+Suche in mehreren Dokumenten.
+
 2018-02-14
 
 Eliminierung der Leerzeichen, Punktuation, Großbuchstaben.
@@ -20,15 +24,19 @@ Die Abstandsmetrik ist die relative Distanz der Trigramme im Suchbergiff und im 
 Wishlist
 ========
 
-Auf mehrere Dokumente erweitern.
-* Naiv: Liste von SEARCH_INDEXes führen
 * Intelligent: SEARCH_INDEX über alle Dokumente gleichzeitig
 * Laufzeiten vergleichen mit großen Collections
 
+Server
+* Such-Engine standalone mit Funktion des Suchens per API
+* Einfügen von Dokumenten per API
+* Persistieren des Suchindex
+* Große Kollektion mit ext. RAM-Datenbank
+
+Frontend (Google-like)
+* Eingabe von Suchbegriffen und Rückgabe von Scores
+* Ausgabe von Dokumenten. Markieren der relevanten Suchberiffe in gelb.
+
 Speicherverbrauch und dessen Limits testen.
 Profiling. Überwachung des Speicherverbrauchs.
-
-Speichern und Laden des Suchindexes.
-
-Suchindex mit Redis.
 
