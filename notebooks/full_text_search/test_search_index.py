@@ -88,17 +88,15 @@ class TestTwoDocs(TestCase):
     @classmethod
     def setUp(cls):
         cls.si = SearchIndex()
-        cls.si._add_to_index("Пеппи сидела на диване и молча слушала разговор дам")
-        cls.si._add_to_index("Дорогие мои, мне так досадно: я нашла две такие чудесные вещи")
+        cls.si.add_to_index("Пеппи сидела на диване и молча слушала разговор дам")
+        cls.si.add_to_index("Дорогие мои, мне так досадно: я нашла две такие чудесные вещи")
 
-    # def test_search(self):
-    #     term_ngrams = SearchIndex.gramify("досадно")
-    #     scores = self.si.search(term_ngrams)
-    #     scores_exp = {
-    #         0: 0.0,
-    #         1: 1.0,
-    #     }
-    #     self.assertEqual(scores_exp, scores)
+    def test_search(self):
+        scores = self.si.search("досадно")
+        scores_exp = {
+            1: 1.0,
+        }
+        self.assertEqual(scores_exp, scores.value())
 
 
 
