@@ -1,7 +1,7 @@
 from unittest import TestCase, main
 import codecs
 import os
-from .search_index import SearchIndex
+from ..search_index import SearchIndex
 
 
 class TestSearchIndexAddToIndex(TestCase):
@@ -72,7 +72,7 @@ class TestLongDocument(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.si = SearchIndex()
-        with codecs.open(os.path.dirname(__file__) + "/draka.txt", "r", "utf-8") as h:
+        with codecs.open(os.path.dirname(__file__) + "/data/draka.txt", "r", "utf-8") as h:
             doc1 = h.read()
         cls.si.add_to_index(doc1)
 

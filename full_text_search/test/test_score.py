@@ -1,5 +1,5 @@
 from unittest import TestCase, main
-from .score import Score
+from ..score import Score
 
 
 class TestScore(TestCase):
