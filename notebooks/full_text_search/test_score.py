@@ -3,6 +3,10 @@ from .score import Score
 
 
 class TestScore(TestCase):
+    def test_init_empty(self):
+        score = Score()
+        self.assertDictEqual(dict(), score.value())
+
     def test_update(self):
         score = Score({
             0: 0.01,
@@ -17,7 +21,7 @@ class TestScore(TestCase):
             1: 0.91,
             2: 0.01,
         })
-        score._update(score_gram)
+        score.update(score_gram)
         self.assertTrue(score_exp.equals(score))
 
 

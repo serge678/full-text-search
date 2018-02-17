@@ -2,13 +2,13 @@ class Score:
     def __init__(self, initial_score=None):
         if not initial_score:
             self.score = dict()
-            return self
+            return
         if not isinstance(initial_score, dict):
             raise ValueError("Not a dict.")
         else:
             self.score = initial_score
 
-    def _update(self, score_gram):
+    def update(self, score_gram):
         """
         Updates total score with the score of ngram
         :param score_gram:
