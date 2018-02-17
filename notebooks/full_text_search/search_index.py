@@ -33,7 +33,7 @@ class SearchIndex:
         }
         """
         self.INDEX = dict()
-        self.NGRAMS_2_DOCS  = dict()
+        self.NGRAMS_2_DOCS = dict()
         self.DOCS_LENGTHS = dict()
         self.NUMBER_DOCS = 0   # Number of docs
 
@@ -81,21 +81,21 @@ class SearchIndex:
         data = data.split()
         return SearchIndex._ngram_list(data)
 
-    def add_to_index(self, doc_contents):
+    def add_to_index(self, doc_content):
         """
 
-        :param data: documents contents as a str
+        :param doc_content:
         :return:
         """
 
         # generate an new id
         doc_md5 = md5()
-        doc_md5.update(doc_contents.encode())
+        doc_md5.update(doc_content.encode())
         doc_id = doc_md5.hexdigest()
 
         if doc_id in self.DOCS_LENGTHS:
             return
-        self._add_to_index(doc_id, self.gramify(doc_contents))
+        self._add_to_index(doc_id, self.gramify(doc_content))
         return doc_id
 
     def _add_to_index(self, doc, doc_ngrams):

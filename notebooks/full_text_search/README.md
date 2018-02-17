@@ -4,6 +4,7 @@ Changelog
 2018-02-17
 
 Suche in mehreren Dokumenten.
+Global eindeutige Dokumenten-Id
 
 2018-02-14
 
@@ -23,8 +24,7 @@ Die Abstandsmetrik ist die relative Distanz der Trigramme im Suchbergiff und im 
 
 Wishlist
 ========
-
-* Intelligent: SEARCH_INDEX über alle Dokumente gleichzeitig
+* Dokumenten-Id braucht 32Byte Speicherplatz. Intern effizient speichern.
 * Laufzeiten vergleichen mit großen Collections
 
 Server
