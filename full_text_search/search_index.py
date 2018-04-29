@@ -1,5 +1,6 @@
 from .score import Score
 from hashlib import md5
+import sys
 
 
 class SearchIndex:
@@ -91,7 +92,7 @@ class SearchIndex:
         # generate an new id
         doc_md5 = md5()
         doc_md5.update(doc_content.encode())
-        doc_id = doc_md5.hexdigest()
+        doc_id = doc_md5.digest()
 
         if doc_id in self.DOCS_LENGTHS:
             return
@@ -101,7 +102,7 @@ class SearchIndex:
     def _add_to_index(self, doc, doc_ngrams):
 
         for i, gram in enumerate(doc_ngrams):
-            key = tuple([gram,doc])
+            key = tuple([gram, doc])
             if key not in self.INDEX:
                 self.INDEX[key] = list()
             self.INDEX[key].append(i)
@@ -159,7 +160,7 @@ class SearchIndex:
 
         min_dist = float("inf")
         score_gram = Score()
-        for key in [tuple([gram,doc]) for doc in docs.keys()]:
+        for key in [tuple([gram, doc]) for doc in docs.keys()]:
             entries_for_doc = self.INDEX[key]
             doc = key[1]
 
@@ -179,3 +180,18 @@ class SearchIndex:
             }))
 
         return position_gram0, score_gram
+
+    def __sizeof__(self):
+        size = 0
+        for key in self.INDEX.keys():
+            size += sys.getsizeof(key)
+            size += sys.getsizeof(1) * len(self.INDEX[key])
+        for key in self.NGRAMS_2_DOCS.keys():
+            size += sys.getsizeof(key)
+            size += sum([sys.getsizeof(el) for el in self.NGRAMS_2_DOCS[key].keys()])
+
+        for key in self.DOCS_LENGTHS.keys():
+            size += sys.getsizeof(key)
+            size += sys.getsizeof(1)
+
+        return size

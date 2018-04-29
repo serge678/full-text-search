@@ -2,6 +2,7 @@ from unittest import TestCase, main
 import codecs
 import os
 from ..search_index import SearchIndex
+import sys
 
 
 class TestSearchIndexAddToIndex(TestCase):
@@ -76,19 +77,22 @@ class TestLongDocument(TestCase):
             doc1 = h.read()
         cls.si.add_to_index(doc1)
 
-    def test_long_document(self):
+    def test_index_size(self):
+        self.assertEqual(508873, sys.getsizeof(self.si))
+
+    def test(self):
         score = self.si.search("побежали в XXX ванную, XXX")
         self.assertEqual({
             '74c4f720094c291f90caafcb77118f1e': 0.8332798459563543
         }, score.value())
 
-    def test_long_document_full_match(self):
+    def test_full_match(self):
         score = self.si.search("побежали в ванную, ")
         self.assertEqual({
             '74c4f720094c291f90caafcb77118f1e': 0.9999999999999999
         }, score.value())
 
-    def test_long_document_no_match(self):
+    def test_no_match(self):
         score = self.si.search("XXXXXX")
         self.assertEqual({}, score.value())
 
@@ -106,7 +110,6 @@ class TestTwoDocs(TestCase):
         self.assertEqual({
             '8d4e5b9a35e6679f56c2a33f2c0e1018': 1.0,
         }, scores.value())
-
 
 
 if __name__ == '__main__':

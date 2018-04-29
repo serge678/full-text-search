@@ -1,6 +1,10 @@
 Changelog
 =========
 
+2018-04-29
+
+Document ids now stored as b'' internally.
+
 2018-02-17
 
 Suche in mehreren Dokumenten.
@@ -24,7 +28,6 @@ Die Abstandsmetrik ist die relative Distanz der Trigramme im Suchbergiff und im 
 
 Wishlist
 ========
-* Dokumenten-Id braucht 32Byte Speicherplatz. Intern effizient speichern.
 * Laufzeiten vergleichen mit großen Collections
 
 Server

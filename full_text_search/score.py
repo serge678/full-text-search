@@ -22,7 +22,9 @@ class Score:
                 self.score[doc] += score_in_doc
 
     def value(self):
-        return self.score
+        # Convert keys from b'' to a hex representation
+        return {"".join(["{:02x}".format(x) for x in k]):v \
+                for k,v in self.score.items()}
 
     def equals(self, other):
         if not isinstance(other, Score):
