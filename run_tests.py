@@ -8,8 +8,8 @@ from full_text_search.test import test_search_index
 
 def run_tests():
 
-    unittest.TestLoader().loadTestsFromModule(test_score)
     suite = unittest.TestLoader().loadTestsFromModule(test_search_index)
+    suite.addTests(unittest.TestLoader().loadTestsFromModule(test_score))
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     if result.failures:
         sys.exit(1)
