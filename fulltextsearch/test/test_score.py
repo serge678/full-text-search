@@ -9,7 +9,7 @@ class TestScore(TestCase):
 
     def test_init_empty(self):
         score = Score()
-        self.assertDictEqual(dict(), score.value())
+        self.assertListEqual(list(), score.value())
 
     def test_update(self):
         score = Score({

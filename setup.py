@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='full_text_search',
+    name='fulltextsearch',
     version='1.0.0',
     description='Full Text Search Index Based on N-grams',
     url='https://github.com/spronkine/full-text-search',
@@ -15,6 +15,6 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     keywords='text retrieval search index full fuzzy',
-    packages=['full_text_search'],
+    packages=['fulltextsearch'],
     install_requires=[],
 )

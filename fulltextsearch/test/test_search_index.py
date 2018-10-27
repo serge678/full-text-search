@@ -47,25 +47,25 @@ class TestSearch(TestCase):
         si = SearchIndex()
         si.add_to_index("слушала")
         score = si.search("слушала")
-        self.assertEqual({
-            '1e8b2604f23d83a1597cfb316706b215': 1.0
-        }, score.value())
+        self.assertEqual([
+            ('1e8b2604f23d83a1597cfb316706b215', 1.0)
+        ], score.value())
 
     def test_score_lt1(self):
         si = SearchIndex()
         si.add_to_index("слушала")
         score = si.search("слушали")
-        self.assertEqual({
-            '1e8b2604f23d83a1597cfb316706b215': 0.8
-        }, score.value())
+        self.assertEqual([
+            ('1e8b2604f23d83a1597cfb316706b215', 0.8)
+        ], score.value())
 
     def test_score_match_in_between_doc(self):
         si = SearchIndex()
         si.add_to_index("она слушала")
         score = si.search("слушала")
-        self.assertEqual({
-            'ce26cffa3faf2019c733f5f4c7caf074': 1.0
-        }, score.value())
+        self.assertEqual([
+            ('ce26cffa3faf2019c733f5f4c7caf074', 1.0)
+        ], score.value())
 
 
 class TestLongDocument(TestCase):
@@ -82,34 +82,36 @@ class TestLongDocument(TestCase):
 
     def test(self):
         score = self.si.search("побежали в XXX ванную, XXX")
-        self.assertEqual({
-            '74c4f720094c291f90caafcb77118f1e': 0.8332798459563543
-        }, score.value())
+        self.assertEqual([
+            ('74c4f720094c291f90caafcb77118f1e', 0.8332798459563543)
+        ], score.value())
 
     def test_full_match(self):
         score = self.si.search("побежали в ванную, ")
-        self.assertEqual({
-            '74c4f720094c291f90caafcb77118f1e': 0.9999999999999999
-        }, score.value())
+        self.assertEqual([
+            ('74c4f720094c291f90caafcb77118f1e', 0.9999999999999999)
+        ], score.value())
 
     def test_no_match(self):
         score = self.si.search("XXXXXX")
-        self.assertEqual({}, score.value())
+        self.assertEqual([], score.value())
 
 
-class TestTwoDocs(TestCase):
+class TestThreeDocs(TestCase):
 
     @classmethod
     def setUp(cls):
         cls.si = SearchIndex()
         cls.si.add_to_index("Пеппи сидела на диване и молча слушала разговор дам")
         cls.si.add_to_index("Дорогие мои, мне так досадно: я нашла две такие чудесные вещи")
+        cls.si.add_to_index("дасадна")
 
     def test_search(self):
         scores = self.si.search("досадно")
-        self.assertEqual({
-            '8d4e5b9a35e6679f56c2a33f2c0e1018': 1.0,
-        }, scores.value())
+        self.assertEqual([
+            ('8d4e5b9a35e6679f56c2a33f2c0e1018', 1.0),
+            ('2724561b21449eb3217c0c72073bd26d', 0.4),
+        ], scores.value())
 
 
 if __name__ == '__main__':

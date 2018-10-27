@@ -2,8 +2,8 @@
 import sys
 import unittest
 
-from full_text_search.test import test_score
-from full_text_search.test import test_search_index
+from fulltextsearch.test import test_score
+from fulltextsearch.test import test_search_index
 
 
 def run_tests():

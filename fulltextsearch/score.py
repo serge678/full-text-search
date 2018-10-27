@@ -38,7 +38,14 @@ class Score:
         return "".join(["{:02x}".format(x) for x in k])
 
     def value(self):
-        return {self.hex_repr(k): v for k, v in self.score.items()}
+        """
+        Returns the list of relevant document ids
+
+        :return: List of tuples: doc_ids with their relevance score
+        """
+        res = {self.hex_repr(k): v for k, v in self.score.items()}
+        # Sort by value
+        return sorted(res.items(), key=lambda x:x[1], reverse=True)
 
     def equals(self, other):
         if not isinstance(other, Score):
