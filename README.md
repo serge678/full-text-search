@@ -7,6 +7,7 @@ search index is stored fully in main memory. A search request
 is responded with a list of documents sorted by relevance and
 with associated relevance scores.
 
+Requires Python3.5
 
 Changelog
 =========
